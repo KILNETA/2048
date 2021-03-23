@@ -183,10 +183,10 @@ void Give_number()
 void Map_Main() // 地圖函式
 {
 	cout << endl << "　　　　　　　　 ２０４８" << endl << endl;
-	cout << "　　Record:"<< "　　fraction "<<Maxfraction <<endl<<endl; 
+	cout << "　　Record:"<< "　　Fraction "<<Maxfraction <<endl<<endl; 
 	cout << "　 Score "<< setw(7) << left << MaxScore;
 	cout << "　+"<< setw(4) << left << Maxadd;
-	cout << "　　　  step "<< Maxstep <<endl<<endl;
+	cout << "　　　  Step "<< Maxstep <<endl<<endl;
 	cout << "　－－－－　" << "－－－－　" << "－－－－　" << "－－－－　" << endl;
 	for (int y = 0; y < 4; y++)
 	{
@@ -202,9 +202,9 @@ void Map_Main() // 地圖函式
 	}
 	cout << "　 Score : " << setw(7) << left << Score;
 	cout << "+" << setw(4) << left << add;
-	cout <<"　　　　step : "<< step <<endl;
+	cout <<"　　　　Step : "<< step <<endl;
 	cout << endl << "　　　　　　Up　↑　　　　　　　Esc：Exit"<<endl;
-	cout << endl << "　　　　Left ←　　→ Right"<<endl;
+	cout << endl << "　　　 Left ← 　 　→ Right"<<endl;
 	cout << endl << "　　　　　　　　↓ Down"<<endl;
 }
 /*============================================================ 控制函式*/
