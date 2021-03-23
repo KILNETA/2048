@@ -4,31 +4,49 @@
 #include <conio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <fstream> 
 
 using namespace std;
 
 int Score =  0 ;
+int size =  0 ;
 int number[4][4] = {0};
 int add=0;
 int step = 0;
+int fraction = 0;
 
-void Give_number();
-void Map_Main();
-void Up();
-void Down();
-void Right();
-void Left();
+int MaxScore =  0 ;
+int Maxadd= 0 ;
+int Maxstep = 0;
+int Maxfraction = 0;
 
-bool ExamineW();
-bool ExamineA();
-bool ExamineS();
-bool ExamineD();
+void Give_number(); //隨機發數 2 or 4 
+void Map_Main(); // 畫圖 
+
+void Up(); //上 
+void Down(); //下 
+void Right(); //右 
+void Left(); //左 
+
+bool ExamineW(); //檢查W方向的動作 
+bool ExamineA(); //檢查A方向的動作 
+bool ExamineS(); //檢查S方向的動作 
+bool ExamineD(); //檢查D方向的動作 
+int ExamineMaxfraction();
+
+bool Read_SaveArchive(); // 
+void Add_SaveArchive(); //
+void Save_SaveArchive(); // 
 
 int main()
 {
-	int button = 0;
+	while(Read_SaveArchive());
+	
 	Give_number();//隨機發數
 	Map_Main();
+	
+	int button = 0;
+	
 	bool validInput = true;
 	while (validInput) // 控制遊戲開始
 	{
@@ -36,47 +54,53 @@ int main()
 
 		while (1) // 讀取玩家按鍵 // 控制操作 
 		{
-			button = _getch();// 讀取玩家按鍵 
-			if (button != 0)
-			{
-				break;
+			if (_kbhit()){
+				button = _getch();// 讀取玩家按鍵 
+				if (button != 0)
+				{
+					break;
+				}
 			}
 		} // 讀取玩家按鍵 
 		switch (button) // 判斷玩家按鍵輸入的結果 
 		{
-		case 119: //按 W 
+		case 72: //按 W 
 			if(-ExamineW()){break;}
 			Up();
 			step++;
 			Give_number();
 			system("cls"); // 清屏
+			if(MaxScore<Score||Maxadd<add||Maxstep<step){Save_SaveArchive();}
 			Map_Main();
 			break;
 
-		case 115: //按 S 
+		case 80: //按 S 
 			if(-ExamineS()){break;}
 			Down();
 			step++;
 			Give_number();
 			system("cls"); // 清屏
+			if(MaxScore<Score||Maxadd<add||Maxstep<step){Save_SaveArchive();}
 			Map_Main();
 			break;
 
-		case 97:   //按 A 
+		case 75:   //按 A 
 			if(-ExamineA()){break;}
 			Left();
 			step++;
 			Give_number();
 			system("cls"); // 清屏
+			if(MaxScore<Score||Maxadd<add||Maxstep<step){Save_SaveArchive();}
 			Map_Main();
 			break;
 
-		case 100: //按 D 
+		case 77: //按 D 
 			if(-ExamineD()){break;}
 			Right();
 			step++;
 			Give_number();
 			system("cls"); // 清屏
+			if(MaxScore<Score||Maxadd<add||Maxstep<step||Maxfraction<fraction){Save_SaveArchive();}
 			Map_Main();
 			break;
 
@@ -91,9 +115,11 @@ int main()
 		}
 		add = 0;
 		
+		fraction=ExamineMaxfraction();
+		
 		if( ExamineW() && ExamineS() && ExamineA() && ExamineD() )
 		{
-			cout <<endl<< "You are loser"<<endl;
+			cout << "　　　　　　　　　　　　　　　You are loser";
 			validInput = false;
 		}
 		
@@ -103,22 +129,22 @@ int main()
 			{
 				if(number[y][x]==2048)
 				{
-					cout <<endl<< "You are winner"<<endl;
+					cout << "　　　　　　　　　　　　　　　You are winner";
 					validInput = false;
 				}
 			}
 		}
 	}
 	_sleep(30000);
-		cout <<endl<< "Press any key to leave";
-		while (1) // 讀取玩家按鍵 // 控制操作 
+	cout <<endl<< "Press any key to leave";
+	while (1) // 讀取玩家按鍵 // 控制操作 
+	{
+		button = _getch();// 讀取玩家按鍵 
+		if (button != 0)
 		{
-			button = _getch();// 讀取玩家按鍵 
-			if (button != 0)
-			{
-				break;
-			}
-		} // 讀取玩家按鍵 
+			break;
+		}
+	} // 讀取玩家按鍵 
 }
 /*============================================================ 發數函式*/
 void Give_number()
@@ -157,9 +183,10 @@ void Give_number()
 void Map_Main() // 地圖函式
 {
 	cout << endl << "　　　　　　　　 ２０４８" << endl << endl;
-	cout << "　 Score : " << setw(7) << left << Score;
-	cout << "+" << setw(4) << left << add;
-	cout <<"　　　　step : "<< step <<endl << endl;
+	cout << "　　Record:"<< "　　fraction "<<Maxfraction <<endl<<endl; 
+	cout << "　 Score "<< setw(7) << left << MaxScore;
+	cout << "　+"<< setw(4) << left << Maxadd;
+	cout << "　　　  step "<< Maxstep <<endl<<endl;
 	cout << "　－－－－　" << "－－－－　" << "－－－－　" << "－－－－　" << endl;
 	for (int y = 0; y < 4; y++)
 	{
@@ -171,9 +198,14 @@ void Map_Main() // 地圖函式
 		}
 		cout << endl;
 		cout << "　－－－－　" << "－－－－　" << "－－－－　" << "－－－－　" << endl;
+		
 	}
-	cout << endl << "　　W：Up　A：Left　S：Down　D：Right"<<endl;
-	cout << "　　Esc：Exit"<<endl;
+	cout << "　 Score : " << setw(7) << left << Score;
+	cout << "+" << setw(4) << left << add;
+	cout <<"　　　　step : "<< step <<endl;
+	cout << endl << "　　　　　　Up　↑　　　　　　　Esc：Exit"<<endl;
+	cout << endl << "　　　　Left ←　　→ Right"<<endl;
+	cout << endl << "　　　　　　　　↓ Down"<<endl;
 }
 /*============================================================ 控制函式*/
 void Up() //往上抬
@@ -323,4 +355,80 @@ bool ExamineD()
 		}
 	}
 	return true;
+}
+
+int ExamineMaxfraction()
+{
+	int max=0;
+	for (int Y = 0; Y < 4; Y++)
+	{
+		for (int X = 0; X < 4; X++)
+		{
+			if(number[Y][X]>max){max=number[Y][X];}
+		}
+	} 
+	return max;
+} 
+
+bool Read_SaveArchive()
+{
+	int ErrorData;
+	fstream file("SaveArchive.txt",ios::in | ios::binary);
+	if (!file)
+	{
+		Add_SaveArchive();
+		return true;
+	}
+	else
+	{
+		file.eof();
+    	file >> MaxScore;
+    	file.eof();
+		file >> Maxadd;
+		file.eof();
+		file >> Maxstep;
+		file.eof();
+		file >> Maxfraction;
+    	file.close(); 
+		return false;
+	}
+}
+void Add_SaveArchive()
+{
+    ofstream fout("SaveArchive.txt");
+    fstream file;
+    file.open("SaveArchive.txt", ios::out);
+    
+	file << "0" <<endl;
+	
+    file << "0" <<endl;
+	
+	file << "0" <<endl;
+	
+	file << "0" <<endl;
+}
+
+void Save_SaveArchive()
+{
+	fstream file;
+	file.open("SaveArchive.txt", ios::out | ios::trunc);
+	if (!file)
+	{
+		Add_SaveArchive();
+	}
+	
+	if(MaxScore<Score){MaxScore=Score;file << Score <<endl;}
+	else{file<<MaxScore<<endl;}
+	
+    if(Maxadd<add){Maxadd=add; file << add <<endl;}
+	else{file<<Maxadd<<endl;}
+	
+	if(Maxstep<step){Maxstep=step; file << step <<endl;}
+	else{file<<Maxstep<<endl;}
+	
+	if(Maxfraction<fraction){Maxfraction=fraction; file << fraction <<endl;}
+	else{file<<Maxfraction<<endl;}
+	
+    file.close(); 
+	return;
 }
