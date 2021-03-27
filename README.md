@@ -7,4 +7,4 @@ This is what I tried to write using the two-dimensional graphics arrangement and
 I think this is an interesting programming process
 Further understand and imitate a game that conforms to the rules.
 I spent more than an hour making the prototype.
-And later used #include <fstream> to add the function of "recording the highest score of a single person".
+And later used #include \<fstream\> to add the function of "recording the highest score of a single person".
